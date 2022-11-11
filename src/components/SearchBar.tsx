@@ -17,7 +17,7 @@ const SearchBar = ({}) => {
 
   return (
       <StyledFormWrap>
-        <FormControl sx={{minWidth: "350px"}}>
+        <FormControl sx={{minWidth: 320}}>
           <TextField
             variant="outlined"
             placeholder="Address..."
@@ -26,7 +26,7 @@ const SearchBar = ({}) => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <img src={searchIcon} width="20px" alt="search logo" />
+                  <img src={searchIcon} width={20} alt="search logo" />
                 </InputAdornment>
               )
             }}

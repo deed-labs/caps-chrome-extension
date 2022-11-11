@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CardActionArea, CardContent, CardMedia, Container, Divider, Grid, keyframes, Link, Modal, Paper, Stack, styled, Typography } from "@mui/material";
+import { Avatar, Box, Container, Grid, Link, Stack, Typography } from "@mui/material";
 import ShareIcon from "../assets/icons/share_icon.png";
 import DonateIcon from "../assets/icons/donate_icon.png";
 import React, { useEffect, useState } from "react";
@@ -7,6 +7,7 @@ import { Profile } from "../types";
 import SharingModal from "./SharingModal";
 import theme from "../theme";
 import { Contract } from "near-api-js";
+import { CAPS_APP_URL } from "../config";
 
 const icons = {
     twitter: <Twitter fontSize="large"/>,
@@ -17,6 +18,8 @@ const icons = {
 const ProfilePage = ({address, contract}: IProfileProps) => {
     const [openShareModal, setOpenShareModal] = useState<boolean>(false);
     const [profile, setProfile] = useState<Profile | null>(null);
+
+    const profileUrl = `${CAPS_APP_URL}/${address}`
 
     const getProfile = async () => {
         // TODO: get profile from the blockchain
@@ -61,8 +64,8 @@ const ProfilePage = ({address, contract}: IProfileProps) => {
     }
 
     return (
-        <Container>
-            <SharingModal url={window.location.href} open={openShareModal} setOpen={setOpenShareModal} />
+        <Container sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+            <SharingModal url={profileUrl} open={openShareModal} setOpen={setOpenShareModal} />
             <Grid container direction="row" gap={5} justifyContent="center" alignItems="center">
                 <Grid item>
                     <img width={30} src={ShareIcon} onClick={() => setOpenShareModal(true)}/>
@@ -78,7 +81,7 @@ const ProfilePage = ({address, contract}: IProfileProps) => {
                     <img  width={35} src={DonateIcon} />
                 </Grid>
             </Grid>
-            <Box my={5}>
+            <Box my={5} maxWidth={320}>
                 <Typography variant="h5" textAlign="center" mb={2}>{profile.name}</Typography>
                 <Typography textAlign="center" color="#9381FF" fontSize={20}>{profile.bio}</Typography>
             </Box>
@@ -89,7 +92,7 @@ const ProfilePage = ({address, contract}: IProfileProps) => {
                         if (profile.links[name as keyof typeof icons] === "") return <React.Fragment key={name}></React.Fragment>;
             
                         return (
-                            <Link key={name} href={profile.links[name as keyof typeof icons]} sx={{color: "#9381FF"}}>
+                            <Link key={name} target="_blank" href={profile.links[name as keyof typeof icons]} sx={{color: "#9381FF"}}>
                                 {icons[name as keyof typeof icons]}
                             </Link>
                         )
