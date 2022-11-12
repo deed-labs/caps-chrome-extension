@@ -1,3 +1,5 @@
+import { OpenProfileMessage } from "./types";
+
 const NEAR_PATTERN: RegExp = /^(([a-z\d]+[-_])*[a-z\d]+\.)(near|testnet)$/;
 
 const getOffset = (element: Element): { top: number; left: number } => {
@@ -54,25 +56,30 @@ const searchAddresses = () => {
     let node = treeWalker.currentNode;
 
     if (node.nodeValue && NEAR_PATTERN.test(node.nodeValue)) {
-      node.parentNode?.addEventListener("mouseover", () => {
-        const nodeOffset = getOffset(node.parentElement!);
+      const nodeOffset = getOffset(node.parentElement!);
 
-        let openButton = createOpenButton(
-          node.parentElement!.offsetHeight,
-          nodeOffset.top,
-          nodeOffset.left
-        );
+      let openButton = createOpenButton(
+        node.parentElement!.offsetHeight,
+        nodeOffset.top,
+        nodeOffset.left
+      );
 
-        openButton.addEventListener("click", () => {
-          chrome.runtime.sendMessage("OpenPopup");
-        });
+      openButton.addEventListener("click", () => {
+        const msg: OpenProfileMessage = {
+          address: node.nodeValue!,
+        };
+        chrome.runtime.sendMessage(msg);
+      });
 
-        node.parentNode?.addEventListener("mouseout", () => {
-          try {
+      node.parentNode?.addEventListener("mouseout", () => {
+        try {
+          setTimeout(() => {
             document.body.removeChild(openButton);
-          } catch {}
-        });
+          }, 1000);
+        } catch {}
+      });
 
+      node.parentNode?.addEventListener("mouseover", () => {
         document.body.appendChild(openButton);
       });
     }
@@ -82,5 +89,3 @@ const searchAddresses = () => {
 document.addEventListener("DOMContentLoaded", () => {
   searchAddresses();
 });
-
-export {};
