@@ -14,6 +14,12 @@ const modalStyle = {
     p: 2,
 };
 
+interface IModalProps {
+    url: string;
+    open: boolean;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 const SharingModal = ({url, open, setOpen}: IModalProps) => {
     const [qr, setQr] = useState('');
     
@@ -56,12 +62,6 @@ const SharingModal = ({url, open, setOpen}: IModalProps) => {
             </Paper>  
         </Modal>
     )
-}
-
-interface IModalProps {
-    url: string;
-    open: boolean;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default SharingModal;

@@ -4,11 +4,10 @@ chrome.runtime.onMessage.addListener(async (request: any) => {
   let screen = await chrome.windows.getLastFocused();
 
   let msg = request as OpenProfileMessage;
-  console.log(msg.address);
 
   chrome.windows.create(
     {
-      url: "index.html",
+      url: "index.html?address=" + msg.address,
       type: "popup",
       focused: true,
       width: 400,

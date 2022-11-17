@@ -72,11 +72,11 @@ const searchAddresses = () => {
       });
 
       node.parentNode?.addEventListener("mouseout", () => {
-        try {
-          setTimeout(() => {
+        setTimeout(() => {
+          try {
             document.body.removeChild(openButton);
-          }, 1000);
-        } catch {}
+          } catch {}
+        }, 1000);
       });
 
       node.parentNode?.addEventListener("mouseover", () => {

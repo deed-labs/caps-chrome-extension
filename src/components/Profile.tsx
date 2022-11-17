@@ -1,13 +1,24 @@
-import { Avatar, Box, Container, Grid, Link, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Container, Grid, Link, Stack, styled, Typography } from "@mui/material";
 import ShareIcon from "../assets/icons/share_icon.png";
 import DonateIcon from "../assets/icons/donate_icon.png";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { GitHub, Telegram, Twitter } from "@mui/icons-material";
-import { Profile } from "../types";
 import SharingModal from "./SharingModal";
-import theme from "../theme";
-import { Contract } from "near-api-js";
 import { CAPS_APP_URL } from "../config";
+import { useProfile } from "../hooks/useProfile";
+import { IWallet } from "../lib/wallet";
+import theme from "../theme";
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+
+const StyledButton = styled(Button)(() => ({
+    background: theme.gradients.purpleGradient,
+    fontSize: "20px",
+    fontWeight: "700",
+    color: "#fff",
+    textTransform: "none",
+    width: "100%",
+    maxWidth: "210px",
+}));
 
 const icons = {
     twitter: <Twitter fontSize="large"/>,
@@ -15,45 +26,34 @@ const icons = {
     telegram: <Telegram fontSize="large"/>
 }
 
-const ProfilePage = ({address, contract}: IProfileProps) => {
+interface IProfileProps {
+    address: string;
+    wallet: IWallet;
+}
+
+const ProfilePage = ({address, wallet}: IProfileProps) => {
     const [openShareModal, setOpenShareModal] = useState<boolean>(false);
-    const [profile, setProfile] = useState<Profile | null>(null);
+    const profile = useProfile(wallet, address);
 
     const profileUrl = `${CAPS_APP_URL}/${address}`
 
-    const getProfile = async () => {
-        // TODO: get profile from the blockchain
-        let profile: Profile = {
-            accountId: address ?? "",
-            name: "Buttercup Cumbersnatch",
-            bio: "Actor, also known as Sherlock Holmes",
-            links: {
-                twitter: "https://twiiter.com",
-                github: "https://github.com",
-                telegram: "",
-            }
-        };
-
-        setProfile(profile);
-    }
-
-    useEffect(() => {
-        getProfile();
-    }, [])
-
     if (!profile) {
         return (
-            <Box justifyContent="center">
-                <Typography 
+            <Box 
+                height="300px"
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <Typography
                     variant="h3"
-                    textAlign="center"
                     color="#9381FF"
                 >
                     404
                 </Typography>
                 <Typography 
                     variant="h4"
-                    textAlign="center"
                     color="#9381FF"
                     sx={{ opacity: 0.5 }}
                 >
@@ -78,7 +78,9 @@ const ProfilePage = ({address, contract}: IProfileProps) => {
                     />
                 </Grid>
                 <Grid item>
-                    <img  width={35} src={DonateIcon} />
+                    <Link href={profileUrl}>
+                        <img  width={35} src={DonateIcon} />
+                    </Link>
                 </Grid>
             </Grid>
             <Box my={5} maxWidth={320}>
@@ -87,7 +89,7 @@ const ProfilePage = ({address, contract}: IProfileProps) => {
             </Box>
             <Box justifyContent="center">
                 <Stack direction="row" gap={2} justifyContent="center">
-                   {
+                   { profile.links &&
                      Object.keys(profile.links).map(name => {
                         if (profile.links[name as keyof typeof icons] === "") return <React.Fragment key={name}></React.Fragment>;
             
@@ -100,13 +102,11 @@ const ProfilePage = ({address, contract}: IProfileProps) => {
                    }
                 </Stack>
             </Box>
+            <Link target="_blank" href={profileUrl} sx={{textDecoration: "none"}}>
+                <StyledButton>Open full profile <OpenInNewIcon fontSize='small'/></StyledButton>
+            </Link>
         </Container>
     )
-}
-
-interface IProfileProps {
-    address: string;
-    contract: Contract | null;
 }
 
 export default ProfilePage;

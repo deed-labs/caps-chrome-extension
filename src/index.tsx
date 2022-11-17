@@ -2,19 +2,10 @@ import { CssBaseline } from '@mui/material';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import * as nearAPI from 'near-api-js';
+import { Buffer } from 'buffer';
 import { CONTRACT_NAME, MAINNET_CONFIG, TESTNET_CONFIG } from './config';
 import { connect, Contract, WalletConnection } from 'near-api-js';
-
-const HUB_OPTIONS = {
-  changeMethods: ["create_soulbound", "update_soulbound"],
-  viewMethods: ["get_soulbound_id_for_account"],
-};
-
-const SBT_OPTIONS = {
-  changeMethods: [],
-  viewMethods: ["get_metadata"],
-};
+import { HUB_OPTIONS, NearWallet } from './lib/wallet/near/wallet';
 
 const initContract = async () => {
   let config =
@@ -27,22 +18,24 @@ const initContract = async () => {
 
   const contract = new Contract(
     walletConnection.account(),
-    CONTRACT_NAME!,
+    CONTRACT_NAME,
     HUB_OPTIONS
   );
 
-    return { contract }
+  return {wallet: new NearWallet(walletConnection, contract)}
 }
 
 (window as any).nearInitPromise = initContract()
-  .then(({contract}) => {
+  .then(({wallet}) => {
     const root = ReactDOM.createRoot(
       document.getElementById('root') as HTMLElement
     );
     root.render(
       <React.StrictMode>
         <CssBaseline />
-        <App contract={contract}/>
+        <App wallet={wallet}/>
       </React.StrictMode>
     );
-  });
+});
+
+window.Buffer = Buffer;

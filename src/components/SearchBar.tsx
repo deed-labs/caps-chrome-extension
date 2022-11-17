@@ -1,17 +1,21 @@
 import { Box, FormControl, TextField, InputAdornment, styled } from "@mui/material";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import searchIcon from "../assets/icons/search.png";
 
 const StyledFormWrap = styled(Box)(() => ({
   justifySelf: "center",
 }));
 
-const SearchBar = ({}) => {
+interface ISearchBarProps {
+  setValue: Dispatch<SetStateAction<string>>
+}
+
+const SearchBar = ({setValue}: ISearchBarProps) => {
   const [query, setQuery] = useState<string>("");
 
   const handleKeyboard = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.code === "Enter") {
-      window.location.pathname = "/" + query;
+      setValue(query);
     }
   }
 

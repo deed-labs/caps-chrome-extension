@@ -2,7 +2,7 @@ import { keyStores } from "near-api-js";
 
 export const CAPS_APP_URL = process.env.REACT_APP_CAPS_URL;
 export const CONTRACT_NAME =
-  process.env.REACT_APP_CONTRACT_NAME || "caps.testnet";
+  process.env.REACT_APP_CAPS_HUB_ID || "caps.testnet";
 
 export const TESTNET_CONFIG = {
   networkId: "testnet",
