@@ -1,4 +1,5 @@
-import { OpenProfileMessage } from "./types";
+import { OPEN_PROFILE_MSG } from "./constants";
+import { Message } from "./types";
 
 const NEAR_PATTERN: RegExp = /^(([a-z\d]+[-_])*[a-z\d]+\.)(near|testnet)$/;
 
@@ -65,8 +66,9 @@ const searchAddresses = () => {
       );
 
       openButton.addEventListener("click", () => {
-        const msg: OpenProfileMessage = {
-          address: node.nodeValue!,
+        const msg: Message = {
+          type: OPEN_PROFILE_MSG,
+          account: node.nodeValue!,
         };
         chrome.runtime.sendMessage(msg);
       });
@@ -85,6 +87,14 @@ const searchAddresses = () => {
     }
   }
 };
+
+const messageHandler = (
+  msg: Message,
+  sender: chrome.runtime.MessageSender,
+  sendResponse: (response: Message) => void
+) => {};
+
+chrome.runtime.onMessage.addListener(messageHandler);
 
 document.addEventListener("DOMContentLoaded", () => {
   searchAddresses();
