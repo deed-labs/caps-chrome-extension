@@ -11,7 +11,7 @@ const initContract = async () => {
   let config =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? TESTNET_CONFIG
-    : MAINNET_CONFIG;
+    : TESTNET_CONFIG; // FIXME: replace with mainnet config
 
   const nearConnection = await connect(config);
   const walletConnection = new WalletConnection(nearConnection, "CAPS");

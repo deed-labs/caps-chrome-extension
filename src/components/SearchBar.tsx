@@ -11,7 +11,7 @@ const SearchBar = () => {
 
   const handleKeyboard = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.code === "Enter") {
-      window.location.pathname = `/profile/${query}`
+      window.location.search = "?page=profile&account=" + query;
     }
   }
 

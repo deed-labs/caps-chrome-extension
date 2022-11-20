@@ -1,4 +1,4 @@
-import { OPEN_PROFILE_MSG } from "./constants";
+import { ACCOUNTS_LIST, GET_ACCOUNTS_MSG, OPEN_PROFILE_MSG } from "./constants";
 import { Message } from "./types";
 
 const NEAR_PATTERN: RegExp = /^(([a-z\d]+[-_])*[a-z\d]+\.)(near|testnet)$/;
@@ -88,11 +88,40 @@ const searchAddresses = () => {
   }
 };
 
+const dumpAddresses = (): string[] => {
+  let treeWalker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    null
+  );
+
+  let addresses = new Set<string>();
+
+  while (treeWalker.nextNode()) {
+    let node = treeWalker.currentNode;
+
+    if (node.nodeValue && NEAR_PATTERN.test(node.nodeValue)) {
+      addresses.add(node.nodeValue);
+    }
+  }
+
+  return Array.from(addresses.values());
+};
+
 const messageHandler = (
   msg: Message,
   sender: chrome.runtime.MessageSender,
   sendResponse: (response: Message) => void
-) => {};
+) => {
+  if (msg.type === GET_ACCOUNTS_MSG) {
+    let response: Message = {
+      type: ACCOUNTS_LIST,
+      accounts: dumpAddresses(),
+    };
+
+    sendResponse(response);
+  }
+};
 
 chrome.runtime.onMessage.addListener(messageHandler);
 

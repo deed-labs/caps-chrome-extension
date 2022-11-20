@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener(async (request: any) => {
   if (msg.type === OPEN_PROFILE_MSG) {
     chrome.windows.create(
       {
-        url: "index.html/profile/" + msg.account,
+        url: "index.html?page=profile&account=" + msg.account,
         type: "popup",
         focused: true,
         width: 400,

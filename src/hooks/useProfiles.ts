@@ -2,24 +2,22 @@ import { useEffect, useState } from "react";
 import { Profile } from "../lib/profile/profile";
 import { IWallet } from "../lib/wallet";
 
-export const useProfiles = (
-  wallet: IWallet,
-  accounts: string[]
-): Profile[] | null => {
-  const [profiles, setProfiles] = useState<Profile[] | null>(null);
+export const useProfiles = (wallet: IWallet, accounts: string[]): Profile[] => {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
 
   useEffect(() => {
-    if (!accounts || accounts.length === 0) return;
-
-    let list: Profile[] = [];
-    accounts.forEach((acc) => {
-      wallet.getProfile(acc).then((profile) => {
+    const fetchProfiles = async () => {
+      let list: Profile[] = [];
+      for (let i = 0; i < accounts.length; i++) {
+        const profile = await wallet.getProfile(accounts[i]);
         if (profile) list.push(profile);
-      });
-    });
+      }
 
-    setProfiles(list);
-  }, []);
+      setProfiles(list);
+    };
+
+    fetchProfiles();
+  }, [accounts]);
 
   return profiles;
 };

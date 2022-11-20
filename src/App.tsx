@@ -14,17 +14,21 @@ interface IAppProps {
 }
 
 const App = ({wallet}: IAppProps) => {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const page = urlParams.get("page") ?? "";
+
   return (
    <ThemeProvider theme={theme}>
-      <Box p={2}>
-        <Stack direction="column" alignItems="center" gap={5}>
+      <Box p={2} height="550px">
+        <Stack direction="column" alignItems="center">
           <SearchBar />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<ProfilesList wallet={wallet} />} />
-              <Route path="/profile/:account" element={<Profile wallet={wallet}/>} />
-            </Routes>
-          </BrowserRouter>
+          { page === "list"
+            ? <ProfilesList wallet={wallet} />
+            : page === "profile"
+            ? <Profile wallet={wallet} />
+            : <></>
+          }
         </Stack>
       </Box>
    </ThemeProvider>

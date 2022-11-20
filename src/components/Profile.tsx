@@ -32,8 +32,10 @@ interface IProfileProps {
 }
 
 const Profile = ({wallet}: IProfileProps) => {
-    const {account} = useParams();
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
 
+    const [account, setAccount] = useState<string>(urlParams.get("account") ?? "");
     const [openShareModal, setOpenShareModal] = useState<boolean>(false);
     const profile = useProfile(wallet, account);
 
@@ -66,7 +68,7 @@ const Profile = ({wallet}: IProfileProps) => {
     }
 
     return (
-        <Container sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+        <Container sx={{display: "flex", flexDirection: "column", alignItems: "center", paddingY: 5}}>
             <SharingModal url={profileUrl} open={openShareModal} setOpen={setOpenShareModal} />
             <Grid container direction="row" gap={5} justifyContent="center" alignItems="center">
                 <Grid item>
