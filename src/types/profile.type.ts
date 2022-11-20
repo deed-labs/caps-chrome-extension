@@ -1,4 +1,5 @@
 export type ProfileInfo = {
+  image: string;
   bio: string;
   links: ExternalLinks;
 };

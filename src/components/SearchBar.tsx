@@ -6,16 +6,12 @@ const StyledFormWrap = styled(Box)(() => ({
   justifySelf: "center",
 }));
 
-interface ISearchBarProps {
-  setValue: Dispatch<SetStateAction<string>>
-}
-
-const SearchBar = ({setValue}: ISearchBarProps) => {
+const SearchBar = () => {
   const [query, setQuery] = useState<string>("");
 
   const handleKeyboard = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.code === "Enter") {
-      setValue(query);
+      window.location.search = "?page=profile&account=" + query;
     }
   }
 

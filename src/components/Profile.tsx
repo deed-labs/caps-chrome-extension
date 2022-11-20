@@ -9,6 +9,7 @@ import { useProfile } from "../hooks/useProfile";
 import { IWallet } from "../lib/wallet";
 import theme from "../theme";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { useParams } from "react-router-dom";
 
 const StyledButton = styled(Button)(() => ({
     background: theme.gradients.purpleGradient,
@@ -27,15 +28,18 @@ const icons = {
 }
 
 interface IProfileProps {
-    address: string;
     wallet: IWallet;
 }
 
-const ProfilePage = ({address, wallet}: IProfileProps) => {
-    const [openShareModal, setOpenShareModal] = useState<boolean>(false);
-    const profile = useProfile(wallet, address);
+const Profile = ({wallet}: IProfileProps) => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
 
-    const profileUrl = `${CAPS_APP_URL}/${address}`
+    const [account, setAccount] = useState<string>(urlParams.get("account") ?? "");
+    const [openShareModal, setOpenShareModal] = useState<boolean>(false);
+    const profile = useProfile(wallet, account);
+
+    const profileUrl = `${CAPS_APP_URL}/${account}`
 
     if (!profile) {
         return (
@@ -64,7 +68,7 @@ const ProfilePage = ({address, wallet}: IProfileProps) => {
     }
 
     return (
-        <Container sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+        <Container sx={{display: "flex", flexDirection: "column", alignItems: "center", paddingY: 5}}>
             <SharingModal url={profileUrl} open={openShareModal} setOpen={setOpenShareModal} />
             <Grid container direction="row" gap={5} justifyContent="center" alignItems="center">
                 <Grid item>
@@ -73,7 +77,7 @@ const ProfilePage = ({address, wallet}: IProfileProps) => {
                 <Grid item>
                     <Avatar 
                         alt={profile.name}
-                        src="https://birdinflight.com/wp-content/uploads/2021/10/benedict-cumberbatch.jpg"
+                        src={profile.imageUrl}
                         sx={{width: 100, height: 100}}
                     />
                 </Grid>
@@ -102,11 +106,11 @@ const ProfilePage = ({address, wallet}: IProfileProps) => {
                    }
                 </Stack>
             </Box>
-            <Link target="_blank" href={profileUrl} sx={{textDecoration: "none"}}>
+            <Link target="_blank" href={profileUrl} mt={5} sx={{textDecoration: "none"}}>
                 <StyledButton>Open full profile <OpenInNewIcon fontSize='small'/></StyledButton>
             </Link>
         </Container>
     )
 }
 
-export default ProfilePage;
+export default Profile;

@@ -1,3 +1,5 @@
-export interface OpenProfileMessage {
-  address: string;
+export interface Message {
+  type: string;
+  account?: string;
+  accounts?: string[];
 }

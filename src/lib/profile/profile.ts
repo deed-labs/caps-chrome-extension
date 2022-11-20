@@ -3,6 +3,7 @@ import { ExternalLinks, NearMetadata, ProfileInfo } from "../../types";
 export class Profile {
   public account: string;
   public name: string;
+  public imageUrl: string;
   public symbol: string;
   public bio: string;
   public links: ExternalLinks;
@@ -10,12 +11,14 @@ export class Profile {
   constructor(
     account: string,
     name: string,
+    imageUrl: string,
     symbol: string,
     bio: string,
     links: ExternalLinks
   ) {
     this.account = account;
     this.name = name;
+    this.imageUrl = imageUrl;
     this.symbol = symbol;
     this.bio = bio;
     this.links = links;
@@ -35,12 +38,13 @@ export class Profile {
         },
       });
 
-      info = JSON.parse(await resp.json());
+      info = await resp.json();
     }
 
     return new Profile(
       account,
       metadata.name,
+      info.image,
       metadata.symbol,
       info.bio,
       info.links
